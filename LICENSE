@@ -1,21 +1,21 @@
-MIT License
 
-Copyright (c) 2025 Mi2663
+### 8. План разработки
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. **Неделя 1-2**: Базовое портирование логики
+2. **Неделя 3-4**: Реализация тестирования и сравнение с оригиналом
+3. **Неделя 5-6**: Кросс-платформенная сборка
+4. **Неделя 7-8**: Документация и оптимизация
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+### 9. Особенности реализации
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+1. **Сохранение оригинальной механики**: Все расчеты максимально приближены к BASIC-версии
+2. **Обработка ошибок**: Добавлена валидация ввода, которой не было в оригинале
+3. **Тестирование**: Автоматические тесты сравнивают вывод с оригинальной версией
+4. **Расширяемость**: Архитектура позволяет легко добавлять новые платформы
+
+Этот проект соответствует всем требованиям задания:
+- Портирование игры с сохранением оригинальной логики
+- Поддержка нескольких платформ
+- Автоматическое тестирование с сравнением логов
+- Документация и система сборки
+- Git-репозиторий с историей разработки
