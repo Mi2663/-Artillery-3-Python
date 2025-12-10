@@ -1,0 +1,7 @@
+# Requirements for Artillery 3
+pytest>=7.0.0
+
+# Optional (uncomment if needed):
+# numpy>=1.21.0
+# pylint>=2.15.0
+# mypy>=0.991
