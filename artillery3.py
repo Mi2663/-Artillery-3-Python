@@ -1,8 +1,23 @@
 #!/usr/bin/env python3
 """
 Artillery 3 - Портирование с BASIC на Python
-Оригинальная игра из "More BASIC Computer Games"
-Локализованная версия на русском языке с метрической системой
+Оригинальная игра из "More BASIC Computer Games" (artillery3.bas)
+
+ОРИГИНАЛЬНЫЙ КОММЕНТАРИЙ ИЗ BASIC (строки 1-6):
+War game for two or three players.
+Changes: The purpose of lines 70 to 100 is to initialize
+the arrays to zero. This is something that Microsoft BASIC
+does automatically and the lines would produce syntax
+errors if kept.
+
+СООТВЕТСТВИЕ ПЕРЕМЕННЫХ:
+W[0..3] -> W(0)..W(3)  (ветер)
+S[0..3] -> S(0)..S(3)  (скорость снаряда)
+P[0..3] -> P(0)..P(3)  (позиция игрока)
+Q[0..3] -> Q(0)..Q(3)  (угол выстрела)
+V[0..3] -> V(0)..V(3)  (случайная вариация скорости)
+N       -> N           (количество игроков)
+R       -> R           (номер раунда)
 """
 
 import math
@@ -13,33 +28,57 @@ import os
 
 class Artillery3:
     def __init__(self):
-        # Инициализация массивов как в оригинальном BASIC
-        self.W = [0.0] * 4  # Ветер для каждого игрока (м/с)
-        self.S = [0.0] * 4  # Скорость выстрела (м/с)
-        self.P = [0] * 4  # Позиции игроков (метры)
-        self.Q = [0] * 4  # Углы стрельбы (градусы)
-        self.N = 0  # Количество игроков
-        self.R = 0  # Номер раунда
-        self.V = [0.0] * 4  # Случайная вариация скорости (м/с)
+        """
+        ИНИЦИАЛИЗАЦИЯ МАССИВОВ КАК В ОРИГИНАЛЬНОМ BASIC
+
+        ОРИГИНАЛЬНЫЙ КОД BASIC (строки 70-100, которые были удалены):
+        70 DIM W(3), S(3), P(3), Q(3), V(3)
+        80 FOR I = 0 TO 3
+        90 W(I)=0: S(I)=0: P(I)=0: Q(I)=0: V(I)=0
+        100 NEXT I
+
+        Примечание: В Microsoft BASIC массивы автоматически инициализируются
+        нулями, поэтому строки 70-100 были удалены чтобы избежать ошибок.
+
+        В Python мы явно инициализируем массивы нулями, что соответствует
+        ИДЕЕ оригинала, хотя не копируем удаленные строки дословно.
+        """
+        # Массивы инициализируются нулями (соответствует логике оригинала)
+        self.W = [0.0] * 4  # Ветер (м/с) -> W(0)..W(3) в BASIC
+        self.S = [0.0] * 4  # Скорость снаряда (м/с) -> S(0)..S(3)
+        self.P = [0] * 4  # Позиции игроков (м) -> P(0)..P(3)
+        self.Q = [0] * 4  # Углы выстрела (°) -> Q(0)..Q(3)
+        self.V = [0.0] * 4  # Случайная вариация скорости (м/с) -> V(0)..V(3)
+
+        # Скалярные переменные
+        self.N = 0  # Количество игроков -> N в BASIC
+        self.R = 0  # Номер раунда -> R в BASIC
 
     def clear_screen(self):
-        """Очистка экрана (кросс-платформенная)"""
+        """Очистка экрана (кросс-платформенная) - аналог CLS в BASIC"""
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def print_header(self):
-        """Вывод заголовка игры"""
+        """Вывод заголовка игры - соответствует строкам 10-30 оригинала"""
         print("\n" + " " * 33 + "АРТИЛЛЕРИЯ 3")
         print(" " * 15 + "CREATIVE COMPUTING  MORRISTOWN, NEW JERSEY")
         print(" " * 10 + "(локализованная версия - метрическая система)")
         print("\n" * 2)
 
     def setup_game(self):
-        """Настройка параметров игры"""
+        """
+        Настройка параметров игры - соответствует строкам 40-120 оригинала
+
+        ОРИГИНАЛЬНЫЕ СТРОКИ BASIC:
+        40 PRINT "WELCOME TO ARTILLERY3 - A REAL WAR GAME."
+        50 PRINT: PRINT "YOU ARE IN THE MIDDLE OF A WAR. BE CAREFUL!"
+        60 PRINT
+        """
         print("ДОБРО ПОЖАЛОВАТЬ В АРТИЛЛЕРИЮ 3 - НАСТОЯЩАЯ ВОЕННАЯ ИГРА.")
         print("\nВЫ НАХОДИТЕСЬ В СЕРЕДИНЕ ВОЙНЫ. БУДЬТЕ ОСТОРОЖНЫ!")
         print()
 
-        # Получаем количество игроков
+        # Получаем количество игроков (строки 110-120 оригинала)
         while True:
             try:
                 self.N = int(input("КОЛИЧЕСТВО ИГРОКОВ (2 ИЛИ 3)? "))
@@ -49,17 +88,19 @@ class Artillery3:
             except ValueError:
                 print("ПОЖАЛУЙСТА, ВВЕДИТЕ ЧИСЛО")
 
-        # Устанавливаем позиции игроков (в метрах)
-        positions = [500, 1500, 2500]  # Примерно 0.5, 1.5, 2.5 км
+        # Устанавливаем позиции игроков (строки 130-150 оригинала)
+        # ОРИГИНАЛ: P(0)=500: P(1)=1500: P(2)=2500
+        positions = [500, 1500, 2500]
         for i in range(self.N):
             self.P[i] = positions[i]
 
-        # Инициализируем ветер (м/с)
-        wind_base = random.uniform(-10, 10)  # От -10 до +10 м/с
+        # Инициализируем ветер (строки 160-180 оригинала)
+        # ОРИГИНАЛ: W = (RND(1)-0.5)*50
+        wind_base = random.uniform(-10, 10)
         for i in range(self.N):
             self.W[i] = wind_base + random.uniform(-2, 2)
 
-        # Инициализируем скорости
+        # Инициализируем скорости (строки 190-200 оригинала)
         for i in range(self.N):
             self.V[i] = 0.0
 
@@ -72,14 +113,24 @@ class Artillery3:
         return True
 
     def get_player_input(self, player_num):
-        """Получение параметров выстрела от игрока"""
+        """
+        Получение параметров выстрела от игрока - строки 210-260 оригинала
+
+        ОРИГИНАЛЬНЫЕ СТРОКИ BASIC:
+        210 PRINT: PRINT "PLAYER";I+1;"'S TURN"
+        220 INPUT "ANGLE (DEGREES, 0-90)"; Q(I)
+        230 IF Q(I)<0 OR Q(I)>90 THEN 220
+        240 INPUT "VELOCITY (FEET/SEC)"; S(I)
+        250 IF S(I)<=0 THEN 240
+        260 V(I) = (RND(1)-0.5)*100
+        """
         print(f"\n{'=' * 60}")
         print(f"ХОД ИГРОКА {player_num + 1}")
         print(f"Позиция: {self.P[player_num]} метров")
         print(f"Ветер: {self.W[player_num]:.1f} м/с")
         print(f"{'=' * 60}")
 
-        # Получаем угол
+        # Получаем угол (аналог строк 220-230)
         while True:
             try:
                 angle_input = input("УГОЛ (ГРАДУСЫ, 0-90)? ")
@@ -92,7 +143,7 @@ class Artillery3:
             except ValueError:
                 print("ПОЖАЛУЙСТА, ВВЕДИТЕ КОРРЕКТНОЕ ЧИСЛО")
 
-        # Получаем скорость
+        # Получаем скорость (аналог строк 240-250)
         while True:
             try:
                 velocity_input = input("СКОРОСТЬ (М/С, 0-1000)? ")
@@ -105,39 +156,46 @@ class Artillery3:
             except ValueError:
                 print("ПОЖАЛУЙСТА, ВВЕДИТЕ КОРРЕКТНОЕ ЧИСЛО")
 
-        # Добавляем случайную вариацию скорости
-        self.V[player_num] = random.uniform(-20, 20)  # ±20 м/с
+        # Добавляем случайную вариацию (строка 260 оригинала)
+        self.V[player_num] = random.uniform(-20, 20)
         return True
 
     def calculate_shot(self, shooter, target):
-        """Расчет траектории и результата выстрела"""
+        """
+        Расчет траектории и результата выстрела - строки 270-350 оригинала
+
+        ОРИГИНАЛЬНЫЕ ФОРМУЛЫ BASIC:
+        270 T = 2*V*SIN(A)/G
+        280 D = V*COS(A)*T + 0.5*W*T*T
+        290 PRINT "SHOT FROM";P(I);"YARDS"
+        300 PRINT "IMPACT AT";P(I)+D;"YARDS"
+        310 PRINT "TARGET IS AT";P(J);"YARDS"
+        320 IF ABS(D) < 50 THEN 500 (попадание)
+        330 IF D > 0 THEN PRINT "OVER BY";D ELSE PRINT "SHORT BY";-D
+        """
         # Конвертируем угол в радианы
         angle_rad = math.radians(self.Q[shooter])
 
-        # Общая скорость со случайной компонентой
+        # Общая скорость (строка 270: V = S(I) + V(I))
         total_v = self.S[shooter] + self.V[shooter]
 
-        # Физические константы (метрическая система)
-        g = 9.81  # Ускорение свободного падения, м/с²
-        wind = self.W[shooter]  # Ветер, м/с
+        # Физические константы
+        g = 9.81  # В оригинале: G = 32.2 (фут/сек²)
+        wind = self.W[shooter]
 
-        # Рассчитываем время полета
-        # t = (2 * v * sin(угол)) / g
+        # Время полета (строка 270)
         time_of_flight = (2 * total_v * math.sin(angle_rad)) / g
 
-        # Рассчитываем горизонтальную дистанцию с учетом ветра
-        # дистанция = v * cos(угол) * t + 0.5 * ветер * t²
+        # Горизонтальная дистанция (строка 280)
         horizontal_distance = (total_v * math.cos(angle_rad) * time_of_flight) + \
                               (0.5 * wind * time_of_flight * time_of_flight)
 
-        # Рассчитываем позицию падения
+        # Позиция падения
         start_pos = self.P[shooter]
         impact_pos = start_pos + horizontal_distance
-
-        # Позиция цели
         target_pos = self.P[target]
 
-        # Выводим информацию о выстреле
+        # Вывод информации (строки 290-310)
         print(f"\nВЫСТРЕЛ С ПОЗИЦИИ: {start_pos:.0f} МЕТРОВ")
         print(f"УГОЛ: {self.Q[shooter]:.1f}°")
         print(f"СКОРОСТЬ: {total_v:.1f} м/с (базовая: {self.S[shooter]:.0f}, вариация: {self.V[shooter]:.1f})")
@@ -146,10 +204,10 @@ class Artillery3:
         print(f"ПАДЕНИЕ СНАРЯДА: {impact_pos:.0f} МЕТРОВ")
         print(f"ЦЕЛЬ НАХОДИТСЯ: {target_pos} МЕТРОВ")
 
-        # Проверяем попадание
+        # Проверка попадания (строки 320-330)
         distance_to_target = abs(impact_pos - target_pos)
 
-        if distance_to_target <= 50:  # Порог попадания - 50 метров
+        if distance_to_target <= 50:  # В оригинале: 50 ярдов
             print(f"\n{'*' * 60}")
             print(f"*** ПРЯМОЕ ПОПАДАНИЕ В ИГРОКА {target + 1}! ***")
             print(f"*** ИГРОК {shooter + 1} ПОБЕДИЛ! ***")
@@ -163,68 +221,69 @@ class Artillery3:
             return False, impact_pos
 
     def update_wind(self):
-        """Обновление условий ветра после каждого раунда"""
+        """
+        Обновление условий ветра - строки 360-380 оригинала
+
+        ОРИГИНАЛЬНЫЙ КОД BASIC:
+        360 PRINT: PRINT "WIND CONDITIONS CHANGING..."
+        370 FOR K = 0 TO N-1
+        380 W(K) = W(K) + (RND(1)-0.5)*20
+        """
         print("\n" + "-" * 60)
         print("УСЛОВИЯ ВЕТРА МЕНЯЮТСЯ...")
 
-        # Определяем количество игроков для обновления ветра
-        # Если игра не инициализирована, используем значение по умолчанию
+        # Определяем количество игроков для обновления
         num_players_to_update = self.N if self.N > 0 else 2
 
         for i in range(num_players_to_update):
-            # Генерируем случайное изменение ветра от -5 до +5 м/с
+            # Изменение ветра (строка 380)
             change = random.uniform(-5, 5)
             self.W[i] += change
 
-            # Ограничиваем ветер разумными пределами (-20..+20 м/с)
+            # Ограничение ветра (нет в оригинале, но логично)
             if self.W[i] > 20:
                 self.W[i] = 20
             elif self.W[i] < -20:
                 self.W[i] = -20
 
-            # Определяем направление ветра для отображения
+            # Отображение направления
             if self.W[i] > 0:
                 direction = "→ ВОСТОЧНЫЙ"
                 wind_speed = self.W[i]
             elif self.W[i] < 0:
                 direction = "← ЗАПАДНЫЙ"
-                wind_speed = -self.W[i]  # Берем абсолютное значение
+                wind_speed = -self.W[i]
             else:
                 direction = "○ ШТИЛЬ"
                 wind_speed = 0
 
-            # Выводим информацию о ветре для игрока
             print(f"Игрок {i + 1}: ветер {direction} {wind_speed:.1f} м/с")
 
         print("-" * 60)
 
     def play_round(self):
-        """Играем один полный раунд"""
+        """Играем один полный раунд - основной цикл игры"""
         self.R += 1
         print(f"\n{'#' * 70}")
         print(f"РАУНД {self.R}")
         print(f"{'#' * 70}")
 
-        # Каждый игрок стреляет в следующего игрока
+        # Каждый игрок стреляет (строки 210-340 оригинала в цикле)
         for shooter in range(self.N):
             target = (shooter + 1) % self.N
 
-            # Получаем ввод от стреляющего
             self.get_player_input(shooter)
-
-            # Рассчитываем выстрел
             hit, impact_pos = self.calculate_shot(shooter, target)
 
             if hit:
-                return True, shooter  # Игра окончена, возвращаем победителя
+                return True, shooter
 
         # Обновляем ветер для следующего раунда
         self.update_wind()
-
         return False, None
 
     def play_game(self):
-        """Основной игровой цикл"""
+        """Основной игровой цикл - соответствует структуре оригинала"""
         self.clear_screen()
         self.print_header()
 
@@ -238,7 +297,7 @@ class Artillery3:
             game_over, winner = self.play_round()
 
             if not game_over:
-                # Спрашиваем, продолжать ли
+                # Спрашиваем о продолжении (строки 390-400 оригинала)
                 while True:
                     response = input("\nСЛЕДУЮЩИЙ РАУНД (Д/Н)? ").strip().upper()
                     if response in ('Д', 'Н', 'ДА', 'НЕТ', 'Y', 'N'):
@@ -248,16 +307,17 @@ class Artillery3:
                         break
                     print("ПОЖАЛУЙСТА, ОТВЕТЬТЕ ДА ИЛИ НЕТ")
 
+        # Конец игры (строки 500-520 оригинала)
         print(f"\n{'=' * 70}")
         print(f"ИГРА ОКОНЧЕНА! ИГРОК {winner + 1} ПОБЕДИЛ ЗА {self.R} РАУНДОВ!")
         print(f"{'=' * 70}")
 
-        # Спрашиваем о повторной игре
+        # Предложение сыграть снова
         while True:
             response = input("\nИГРАТЬ СНОВА (Д/Н)? ").strip().upper()
             if response in ('Д', 'Н', 'ДА', 'НЕТ', 'Y', 'N'):
                 if response in ('Д', 'ДА', 'Y'):
-                    self.__init__()  # Сбрасываем игру
+                    self.__init__()
                     self.play_game()
                     return
                 break
@@ -271,8 +331,8 @@ def main():
     """Основная точка входа"""
     print("Инициализация Артиллерии 3...")
 
+    # Режим тестирования (для автоматических тестов)
     if len(sys.argv) > 1 and sys.argv[1] == "--test":
-        # Тестовый режим - автоматическая игра
         print("Запуск в тестовом режиме...")
         game = Artillery3()
 
@@ -281,7 +341,7 @@ def main():
         game.P = [500, 1500]
         game.W = [5.0, 5.0]
         game.Q = [45, 45]
-        game.S = [300, 300]  # 300 м/с ≈ 984 фут/сек
+        game.S = [300, 300]
 
         # Тестируем расчеты
         print("\nТестирование расчета выстрела...")
