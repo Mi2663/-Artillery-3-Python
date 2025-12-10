@@ -1,7 +1,6 @@
-# Requirements for Artillery 3
-pytest>=7.0.0
+# Артиллерия 3 - зависимости
+# Для базовой работы игры ничего не требуется
 
-# Optional (uncomment if needed):
-# numpy>=1.21.0
-# pylint>=2.15.0
-# mypy>=0.991
+# Для тестирования и разработки (опционально)
+pytest>=7.0.0
+pytest-cov>=4.0.0
