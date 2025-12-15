@@ -28,6 +28,6 @@ git clone https://github.com/yourusername/artillery3-python.git
 cd artillery3-python
 
 # Запустите игру
-make run
-# или напрямую:
-python3 artillery3.py
+py artillery3.py
+# Запуск тестов:
+py test_artillery3.py
