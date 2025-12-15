@@ -6,13 +6,13 @@ all: check
 
 check:
 	@echo "Checking Python version..."
-	@python3 --version || (echo "Python 3 is required"; exit 1)
+	@python --version || (echo "Python 3 is required"; exit 1)
 
 run: check
-	@python3 artillery3.py
+	@python artillery3.py
 
 test: check
-	@python3 test_artillery3.py
+	@python test_artillery3.py
 
 lint: check
 	@echo "Running linter..."
