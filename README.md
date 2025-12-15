@@ -23,7 +23,7 @@
 
 ### Быстрый запуск
 ```bash
-# Clone the repository
+# Клонировать репозиторий
 git clone https://github.com/yourusername/artillery3-python.git
 cd artillery3-python
 
